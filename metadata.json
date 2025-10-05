@@ -1,0 +1,5 @@
+{
+  "name": "Deutscher Grammatik- und Rechtschreibprüfer",
+  "description": "Eine Webanwendung, die Gemini API nutzt, um die Grammatik und Rechtschreibung von deutschem Text zu überprüfen und zu korrigieren.",
+  "requestFramePermissions": []
+}
