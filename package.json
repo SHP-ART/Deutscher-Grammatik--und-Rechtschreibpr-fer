@@ -1,21 +1,36 @@
 {
   "name": "deutscher-grammatik--und-rechtschreibprüfer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "cd server && npm run dev",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "build:server": "cd server && npm run build",
+    "build:all": "npm run build && npm run build:server",
+    "preview": "vite preview",
+    "start": "NODE_ENV=production node server/dist/index.js",
+    "install:all": "npm install && cd server && npm install",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop german-grammar-checker",
+    "pm2:restart": "pm2 restart german-grammar-checker",
+    "pm2:logs": "pm2 logs german-grammar-checker",
+    "pm2:status": "pm2 status"
   },
   "dependencies": {
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@google/genai": "^1.22.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
