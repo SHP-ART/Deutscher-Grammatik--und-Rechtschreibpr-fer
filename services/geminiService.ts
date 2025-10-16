@@ -1,4 +1,5 @@
-const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
+// In production, use relative URL (same origin). In development, use localhost:3001
+const API_URL = (import.meta as any).env?.VITE_API_URL || '';
 
 export async function correctGrammar(text: string): Promise<string> {
   try {
