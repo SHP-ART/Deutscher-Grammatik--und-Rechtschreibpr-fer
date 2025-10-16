@@ -66,18 +66,86 @@ NODE_ENV=development npm run dev:all
 
 ## Production Deployment
 
+### Erste Installation auf dem Server
+
 ```bash
-# Alles bauen
+# 1. Repository klonen
+git clone <dein-repository-url>
+cd Deutscher-Grammatik--und-Rechtschreibpr-fer
+
+# 2. .env Datei erstellen
+cp .env.example .env
+# Öffne .env und trage deinen GEMINI_API_KEY ein
+nano .env
+
+# 3. Dependencies installieren
+npm run install:all
+
+# 4. Projekt bauen
 npm run build:all
 
-# Mit PM2 starten (empfohlen)
+# 5. PM2 installieren (falls noch nicht installiert)
+npm install -g pm2
+
+# 6. Mit PM2 starten
 npm run pm2:start
 
-# Oder ohne PM2
-npm start
+# 7. PM2 für Autostart beim Systemstart konfigurieren
+pm2 startup
+# Führe den Befehl aus, den PM2 dir anzeigt
+pm2 save
 ```
 
-Siehe [INSTALL.md](INSTALL.md) und [DEPLOYMENT.md](DEPLOYMENT.md) für Details.
+Server läuft jetzt auf `http://deine-server-ip:3001`
+
+### Updates mit git pull
+
+```bash
+# 1. Zum Projekt-Verzeichnis wechseln
+cd Deutscher-Grammatik--und-Rechtschreibpr-fer
+
+# 2. Neueste Änderungen holen
+git pull
+
+# 3. Dependencies aktualisieren
+npm run install:all
+
+# 4. Neu bauen
+npm run build:all
+
+# 5. PM2 neu starten
+npm run pm2:restart
+```
+
+### Nützliche PM2-Befehle
+
+```bash
+npm run pm2:status    # Status prüfen
+npm run pm2:logs      # Logs anzeigen
+npm run pm2:stop      # Stoppen
+npm run pm2:restart   # Neustarten
+```
+
+### Update-Script (Optional)
+
+Erstelle `update.sh` für automatische Updates:
+
+```bash
+#!/bin/bash
+git pull && \
+npm run install:all && \
+npm run build:all && \
+npm run pm2:restart && \
+echo "✅ Update erfolgreich!"
+```
+
+Ausführbar machen und nutzen:
+```bash
+chmod +x update.sh
+./update.sh
+```
+
+Siehe [INSTALL.md](INSTALL.md) und [DEPLOYMENT.md](DEPLOYMENT.md) für weitere Details.
 
 ## Architektur
 
