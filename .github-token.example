@@ -1,0 +1,17 @@
+# GitHub Personal Access Token
+#
+# So erstellst du einen Personal Access Token:
+# 1. Gehe zu GitHub.com → Settings → Developer settings → Personal access tokens → Tokens (classic)
+# 2. Klicke auf "Generate new token (classic)"
+# 3. Gib einen Namen ein (z.B. "Server Update Script")
+# 4. Wähle Ablaufdatum (oder "No expiration")
+# 5. Wähle folgende Berechtigungen:
+#    - repo (full control of private repositories)
+# 6. Klicke "Generate token"
+# 7. Kopiere den Token (wird nur einmal angezeigt!)
+# 8. Füge ihn unten ein
+#
+# WICHTIG: Diese Datei NICHT in Git committen!
+# Sie ist bereits in .gitignore eingetragen.
+
+export GITHUB_TOKEN="dein_github_token_hier"
