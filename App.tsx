@@ -16,6 +16,8 @@ const App: React.FC = () => {
   const [needsSetup, setNeedsSetup] = useState<boolean>(false);
   const [isCheckingSetup, setIsCheckingSetup] = useState<boolean>(true);
   const [toUpperCase, setToUpperCase] = useState<boolean>(false);
+  const [asEmail, setAsEmail] = useState<boolean>(false);
+  const [asInvoice, setAsInvoice] = useState<boolean>(false);
 
   useEffect(() => {
     const checkSetupStatus = async () => {
@@ -55,7 +57,7 @@ const App: React.FC = () => {
     setError('');
     setCorrectedText('');
 
-    correctGrammar(inputText)
+    correctGrammar(inputText, { asEmail, asInvoice })
       .then(result => {
         setCorrectedText(toUpperCase ? result.toUpperCase() : result);
       })
@@ -185,18 +187,52 @@ const App: React.FC = () => {
           </div>
 
           {/* Options */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <label className="flex items-center gap-2 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={toUpperCase}
-                onChange={(e) => setToUpperCase(e.target.checked)}
-                className="w-5 h-5 rounded border-2 border-slate-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer transition-all"
-              />
-              <span className="text-sm font-medium text-slate-700 group-hover:text-indigo-600 transition-colors">
-                Ausgabe in GROSSBUCHSTABEN
-              </span>
-            </label>
+          <div className="flex flex-col items-center justify-center gap-3 pt-2">
+            <div className="flex items-center justify-center gap-4 flex-wrap">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={toUpperCase}
+                  onChange={(e) => setToUpperCase(e.target.checked)}
+                  className="w-5 h-5 rounded border-2 border-slate-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer transition-all"
+                />
+                <span className="text-sm font-medium text-slate-700 group-hover:text-indigo-600 transition-colors">
+                  Ausgabe in GROSSBUCHSTABEN
+                </span>
+              </label>
+            </div>
+
+            <div className="flex items-center justify-center gap-4 flex-wrap">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={asEmail}
+                  onChange={(e) => {
+                    setAsEmail(e.target.checked);
+                    if (e.target.checked) setAsInvoice(false);
+                  }}
+                  className="w-5 h-5 rounded border-2 border-slate-300 text-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer transition-all"
+                />
+                <span className="text-sm font-medium text-slate-700 group-hover:text-purple-600 transition-colors">
+                  Als E-Mail formatieren
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={asInvoice}
+                  onChange={(e) => {
+                    setAsInvoice(e.target.checked);
+                    if (e.target.checked) setAsEmail(false);
+                  }}
+                  className="w-5 h-5 rounded border-2 border-slate-300 text-pink-600 focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 cursor-pointer transition-all"
+                />
+                <span className="text-sm font-medium text-slate-700 group-hover:text-pink-600 transition-colors">
+                  Als KFZ-Werkstatt Rechnungstext
+                </span>
+              </label>
+            </div>
           </div>
 
           {/* Action Button */}

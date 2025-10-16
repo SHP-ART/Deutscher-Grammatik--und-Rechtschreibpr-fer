@@ -166,7 +166,7 @@ app.post('/api/check-grammar', async (req: Request, res: Response) => {
       });
     }
 
-    const { text } = req.body;
+    const { text, formatOptions } = req.body;
 
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'Ungültiger Text' });
@@ -176,8 +176,8 @@ app.post('/api/check-grammar', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Text ist zu lang (max. 50.000 Zeichen)' });
     }
 
-    // Cache prüfen
-    const cacheKey = generateCacheKey(text);
+    // Cache prüfen (inkl. Format-Optionen im Cache-Key)
+    const cacheKey = generateCacheKey(text + JSON.stringify(formatOptions || {}));
     const cachedResult = cache.get<string>(cacheKey);
 
     if (cachedResult) {
@@ -187,7 +187,16 @@ app.post('/api/check-grammar', async (req: Request, res: Response) => {
 
     // Gemini API aufrufen
     const model = 'gemini-2.0-flash-exp';
-    const prompt = `Korrigiere die Grammatik und Rechtschreibung des folgenden deutschen Textes. Gib nur den korrigierten Text zurück, ohne zusätzliche Erklärungen, Kommentare oder Formatierungen wie Markdown. Der Text ist: "${text}"`;
+    let prompt = `Korrigiere die Grammatik und Rechtschreibung des folgenden deutschen Textes. Gib nur den korrigierten Text zurück, ohne zusätzliche Erklärungen, Kommentare oder Formatierungen wie Markdown.`;
+
+    // Formatierungs-Anweisungen hinzufügen
+    if (formatOptions?.asEmail) {
+      prompt += ` Formatiere den Text als professionelle E-Mail mit Anrede, Haupttext und Grußformel. Verwende eine höfliche und professionelle Sprache.`;
+    } else if (formatOptions?.asInvoice) {
+      prompt += ` Formatiere den Text als kurzen Rechnungstext für eine KFZ-Werkstatt. Der Text soll als Hinweis oder Erklärung auf einer Rechnung verwendet werden können. Verwende eine klare, sachliche und kundenfreundliche Sprache.`;
+    }
+
+    prompt += ` Der Text ist: "${text}"`;
 
     const response = await ai.models.generateContent({
       model: model,
