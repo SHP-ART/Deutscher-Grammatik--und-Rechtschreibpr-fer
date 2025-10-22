@@ -14,7 +14,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env from project root
-const envPath = path.join(__dirname, '../.env');
+// Support both development (tsx) and production (compiled) modes
+const isDist = __dirname.endsWith('dist');
+const envPath = path.join(__dirname, isDist ? '../../.env' : '../.env');
 console.log('Loading .env from:', envPath);
 const result = dotenv.config({ path: envPath });
 if (result.error) {
