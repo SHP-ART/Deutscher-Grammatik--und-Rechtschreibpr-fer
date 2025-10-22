@@ -187,26 +187,75 @@ app.post('/api/check-grammar', async (req: Request, res: Response) => {
 
     // Gemini API aufrufen
     const model = 'gemini-2.0-flash-exp';
-    let prompt = `Korrigiere die Grammatik und Rechtschreibung des folgenden deutschen Textes. Gib nur den korrigierten Text zurück, ohne zusätzliche Erklärungen, Kommentare oder Formatierungen wie Markdown.`;
+    let prompt = '';
 
-    // Formatierungs-Anweisungen hinzufügen
-    if (formatOptions?.asEmail) {
-      prompt += ` Formatiere den Text als professionelle E-Mail mit Anrede, Haupttext und Grußformel. Verwende eine höfliche und professionelle Sprache.`;
-    } else if (formatOptions?.asInvoice) {
-      prompt += ` Formatiere den Text als kurzen Rechnungstext für eine KFZ-Werkstatt. Der Text soll als Hinweis oder Erklärung auf einer Rechnung verwendet werden können. Verwende eine klare, sachliche und kundenfreundliche Sprache.`;
+    // Recherche-Modus: Verwende Google Search für aktuelle Informationen
+    if (formatOptions?.withResearch) {
+      prompt = `Beantworte die folgende Frage mit aktuellen Informationen aus dem Internet. Gib eine ausführliche Antwort mit Quellenangaben. Frage: "${text}"`;
+    } else {
+      // Standard-Grammatikkorrektur
+      prompt = `Korrigiere die Grammatik und Rechtschreibung des folgenden deutschen Textes. Gib nur den korrigierten Text zurück, ohne zusätzliche Erklärungen, Kommentare oder Formatierungen wie Markdown.`;
+
+      // Formatierungs-Anweisungen hinzufügen
+      if (formatOptions?.asEmail) {
+        prompt += ` Formatiere den Text als professionelle E-Mail mit Anrede, Haupttext und Grußformel. Verwende eine höfliche und professionelle Sprache.`;
+      } else if (formatOptions?.asInvoice) {
+        prompt += ` Formatiere den Text als kurzen Rechnungstext für eine KFZ-Werkstatt. Der Text soll als Hinweis oder Erklärung auf einer Rechnung verwendet werden können. Verwende eine klare, sachliche und kundenfreundliche Sprache.`;
+      }
+
+      prompt += ` Der Text ist: "${text}"`;
     }
 
-    prompt += ` Der Text ist: "${text}"`;
-
-    const response = await ai.models.generateContent({
+    // API-Konfiguration mit optionalem Google Search Grounding
+    const apiConfig: any = {
       model: model,
       contents: prompt,
       config: {
         temperature: 0.2,
       }
-    });
+    };
 
-    const correctedText = response.text?.trim() || '';
+    // Google Search Grounding nur bei Recherche aktivieren
+    if (formatOptions?.withResearch) {
+      apiConfig.config.tools = [{
+        googleSearch: {}
+      }];
+    }
+
+    const response = await ai.models.generateContent(apiConfig);
+
+    let correctedText = response.text?.trim() || '';
+
+    // Wenn Recherche aktiviert ist, füge Quellenangaben hinzu
+    if (formatOptions?.withResearch) {
+      const responseData = response as any;
+
+      if (responseData.groundingMetadata) {
+        const sources = responseData.groundingMetadata.searchEntryPoint?.renderedContent ||
+                        responseData.groundingMetadata.groundingChunks || [];
+
+        if (sources && sources.length > 0) {
+          correctedText += '\n\n--- Quellen ---\n';
+
+          // Extrahiere URLs aus den Grounding-Metadaten
+          if (responseData.groundingMetadata.groundingSupports) {
+            responseData.groundingMetadata.groundingSupports.forEach((support: any, index: number) => {
+              if (support.groundingChunkIndices) {
+                support.groundingChunkIndices.forEach((chunkIndex: number) => {
+                  const chunk = responseData.groundingMetadata.groundingChunks?.[chunkIndex];
+                  if (chunk?.web?.uri) {
+                    correctedText += `\n[${index + 1}] ${chunk.web.uri}`;
+                    if (chunk.web.title) {
+                      correctedText += ` - ${chunk.web.title}`;
+                    }
+                  }
+                });
+              }
+            });
+          }
+        }
+      }
+    }
 
     // In Cache speichern
     cache.set(cacheKey, correctedText);
