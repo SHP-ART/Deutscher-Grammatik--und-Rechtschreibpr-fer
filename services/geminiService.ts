@@ -4,6 +4,7 @@ const API_URL = (import.meta as any).env?.VITE_API_URL || '';
 export interface FormatOptions {
   asEmail?: boolean;
   asInvoice?: boolean;
+  withResearch?: boolean;
 }
 
 export async function correctGrammar(text: string, options?: FormatOptions): Promise<string> {

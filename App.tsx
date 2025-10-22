@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [toUpperCase, setToUpperCase] = useState<boolean>(false);
   const [asEmail, setAsEmail] = useState<boolean>(false);
   const [asInvoice, setAsInvoice] = useState<boolean>(false);
+  const [withResearch, setWithResearch] = useState<boolean>(false);
 
   useEffect(() => {
     const checkSetupStatus = async () => {
@@ -57,7 +58,7 @@ const App: React.FC = () => {
     setError('');
     setCorrectedText('');
 
-    correctGrammar(inputText, { asEmail, asInvoice })
+    correctGrammar(inputText, { asEmail, asInvoice, withResearch })
       .then(result => {
         setCorrectedText(toUpperCase ? result.toUpperCase() : result);
       })
@@ -230,6 +231,18 @@ const App: React.FC = () => {
                 />
                 <span className="text-sm font-medium text-slate-700 group-hover:text-pink-600 transition-colors">
                   Als KFZ-Werkstatt Rechnungstext
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={withResearch}
+                  onChange={(e) => setWithResearch(e.target.checked)}
+                  className="w-5 h-5 rounded border-2 border-slate-300 text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-all"
+                />
+                <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600 transition-colors">
+                  Mit Google-Recherche und Quellenangaben
                 </span>
               </label>
             </div>
