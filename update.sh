@@ -1,25 +1,13 @@
 #!/bin/bash
 
 # Update-Skript für Deutscher Grammatik- und Rechtschreibprüfer
-# Version 1.11.0
+# Version 1.12.0
 
 echo "🔄 Starte Update-Prozess..."
 
-# Lade GitHub Token aus separater Datei (falls vorhanden)
-if [ -f ".github-token" ]; then
-    source .github-token
-    echo "✓ GitHub Token geladen"
-fi
-
-# Git Pull mit Token-Authentifizierung
+# Git Pull (funktioniert für öffentliche Repositories)
 echo "📥 Hole neueste Änderungen von GitHub..."
-if [ -n "$GITHUB_TOKEN" ]; then
-    # Mit Token
-    git pull https://$GITHUB_TOKEN@github.com/SHP-ART/Deutscher-Grammatik--und-Rechtschreibpr-fer.git
-else
-    # Ohne Token (normale Authentifizierung)
-    git pull
-fi
+git pull
 
 if [ $? -ne 0 ]; then
     echo "❌ Fehler beim Git Pull"
