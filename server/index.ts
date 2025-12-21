@@ -26,6 +26,10 @@ if (result.error) {
 }
 
 const app = express();
+
+// Trust proxy - wichtig für Apps hinter nginx/reverse proxy
+app.set('trust proxy', true);
+
 const PORT = process.env.PORT || 3001;
 let API_KEY = process.env.GEMINI_API_KEY;
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -121,7 +125,7 @@ app.post('/api/setup/configure', async (req: Request, res: Response) => {
     try {
       const testAi = new GoogleGenAI({ apiKey });
       await testAi.models.generateContent({
-        model: 'gemini-2.0-flash-exp',
+        model: 'gemini-1.5-flash',
         contents: 'Test',
         config: { temperature: 0.2 }
       });
@@ -188,7 +192,7 @@ app.post('/api/check-grammar', async (req: Request, res: Response) => {
     }
 
     // Gemini API aufrufen
-    const model = 'gemini-2.0-flash-exp';
+    const model = 'gemini-1.5-flash';
     let prompt = '';
 
     // Recherche-Modus: Verwende Google Search für aktuelle Informationen
