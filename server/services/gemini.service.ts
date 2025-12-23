@@ -8,12 +8,16 @@ function buildPrompt(text: string, formatOptions?: FormatOptions): string {
     return `Beantworte die folgende Frage mit aktuellen Informationen aus dem Internet. Gib eine ausführliche Antwort mit Quellenangaben. Frage: "${text}"`;
   }
 
+  if (formatOptions?.asInvoice) {
+    return `Erstelle aus der folgenden Fehlerliste eine kurze, sachliche Kundenbenachrichtigung für eine KFZ-Werkstatt. Beginne mit "Hinweis:" und liste die Fehler als Stichpunkte auf (mit "-" oder "*"). Füge am Ende einen kurzen Satz zur Terminvereinbarung hinzu. Keine Grammatikkorrektur, verwende die Fehler wie angegeben. Halte es kurz und professionell.
+
+Fehlerliste: "${text}"`;
+  }
+
   let prompt = 'Korrigiere die Grammatik und Rechtschreibung des folgenden deutschen Textes. Gib nur den korrigierten Text zurück, ohne zusätzliche Erklärungen, Kommentare oder Formatierungen wie Markdown.';
 
   if (formatOptions?.asEmail) {
     prompt += ' Formatiere den Text als professionelle E-Mail mit Anrede, Haupttext und Grußformel. Verwende eine höfliche und professionelle Sprache.';
-  } else if (formatOptions?.asInvoice) {
-    prompt += ' Erstelle eine kurze, sachliche Fehlerbenachrichtigung für einen KFZ-Kunden. Beginne mit "Hinweis:" und liste die erkannten Fehler kurz und verständlich in Stichpunkten auf. Füge am Ende einen kurzen Hinweis zur schnellen Reparatur oder Terminvereinbarung hinzu. Halte die Ausgabe kompakt und professionell.';
   }
 
   prompt += ` Der Text ist: "${text}"`;
