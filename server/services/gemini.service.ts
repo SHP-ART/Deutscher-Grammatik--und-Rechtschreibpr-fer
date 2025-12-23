@@ -1,7 +1,7 @@
 import { getGeminiClient } from '../config/gemini.js';
 import { SERVER_CONSTANTS } from '../utils/constants.js';
 import { GeminiError, ApiKeyError } from '../types/error.types.js';
-import type { FormatOptions, GeminiApiConfig, GroundingMetadata } from '../types/index.js';
+import type { FormatOptions, GroundingMetadata } from '../types/index.js';
 
 function buildPrompt(text: string, formatOptions?: FormatOptions): string {
   if (formatOptions?.withResearch) {
@@ -19,24 +19,6 @@ function buildPrompt(text: string, formatOptions?: FormatOptions): string {
   prompt += ` Der Text ist: "${text}"`;
 
   return prompt;
-}
-
-function buildApiConfig(prompt: string, formatOptions?: FormatOptions): GeminiApiConfig {
-  const config: GeminiApiConfig = {
-    model: SERVER_CONSTANTS.GEMINI.MODEL,
-    contents: prompt,
-    config: {
-      temperature: SERVER_CONSTANTS.GEMINI.TEMPERATURE
-    }
-  };
-
-  if (formatOptions?.withResearch) {
-    config.config.tools = [{
-      googleSearch: {}
-    }];
-  }
-
-  return config;
 }
 
 function extractGroundingSources(responseData: any): string {
