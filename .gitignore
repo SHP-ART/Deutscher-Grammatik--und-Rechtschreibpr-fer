@@ -17,6 +17,9 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Claude Code settings (may contain API keys)
+.claude/
+
 # GitHub Token
 .github-token
 
