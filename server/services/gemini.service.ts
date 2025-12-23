@@ -13,7 +13,7 @@ function buildPrompt(text: string, formatOptions?: FormatOptions): string {
   if (formatOptions?.asEmail) {
     prompt += ' Formatiere den Text als professionelle E-Mail mit Anrede, Haupttext und Grußformel. Verwende eine höfliche und professionelle Sprache.';
   } else if (formatOptions?.asInvoice) {
-    prompt += ' Formuliere den Text als professionellen Rechnungstext für eine KFZ-Werkstatt. Der Text soll präzise und verständlich die durchgeführten Arbeiten, Reparaturen oder Serviceleistungen beschreiben. Verwende Fachbegriffe korrekt, aber erkläre diese kundenfreundlich. Der Text muss sachlich, transparent und nachvollziehbar sein, damit der Kunde genau versteht, welche Leistungen erbracht wurden. Vermeide umgangssprachliche Formulierungen und achte auf eine klare, strukturierte Darstellung.';
+    prompt += ' Erstelle eine kurze, sachliche Fehlerbenachrichtigung für einen KFZ-Kunden. Beginne mit "Hinweis:" und liste die erkannten Fehler kurz und verständlich in Stichpunkten auf. Füge am Ende einen kurzen Hinweis zur schnellen Reparatur oder Terminvereinbarung hinzu. Halte die Ausgabe kompakt und professionell.';
   }
 
   prompt += ` Der Text ist: "${text}"`;
