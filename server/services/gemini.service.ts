@@ -9,7 +9,7 @@ function buildPrompt(text: string, formatOptions?: FormatOptions): string {
   }
 
   if (formatOptions?.asInvoice) {
-    return `Erstelle aus der folgenden Fehlerliste eine kurze, sachliche Kundenbenachrichtigung für eine KFZ-Werkstatt. Beginne mit "Hinweis:" und liste die Fehler als Stichpunkte auf (mit "-" oder "*"). Füge am Ende einen kurzen Satz zur Terminvereinbarung hinzu. Keine Grammatikkorrektur, verwende die Fehler wie angegeben. Halte es kurz und professionell.
+    return `Erstelle aus der folgenden Fehlerliste eine kurze, sachliche Kundenbenachrichtigung für eine KFZ-Werkstatt. Korrigiere dabei Rechtschreib- und Grammatikfehler, aber weise NICHT auf die Korrekturen hin. Beginne mit "Hinweis:" und liste die korrigierten Fehler als Stichpunkte auf (mit "-" oder "*"). Füge am Ende einen kurzen Satz zur Terminvereinbarung hinzu. Keine Erklärungen, nur die Benachrichtigung. Halte es kurz und professionell.
 
 Fehlerliste: "${text}"`;
   }
